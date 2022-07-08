@@ -1,0 +1,66 @@
+# Use root/example user/password credentials
+version: '3.1'
+
+services:
+  php:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - 80:80
+    links:
+      - mongo
+    volumes:
+      - ./src:/var/www/html/
+
+  mysql:
+    image: mysql
+    container_name: mysql
+    command: --default-authentication-plugin=mysql_native_password
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: example
+    volumes:
+      - db:/var/lib/mysql
+      - ./data/application/init.sql:/docker-entrypoint-initdb.d/init.sql
+
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 8080:8080
+
+  mongo:
+    image: mongo:5.0
+    container_name: mongo
+    environment:
+        - MONGO_INITDB_ROOT_USERNAME=root
+        - MONGO_INITDB_ROOT_PASSWORD=password
+        - MONGO_INITDB_DATABASE=lectorio_assessment
+    restart: unless-stopped
+    ports:
+      - "27017:27017"
+    volumes:
+      #- ./database/mongodb/db:/data/db
+      #- ./database/mongodb/dev.archive:/Databases/dev.archive
+      #- ./database/mongodb/production:/Databases/production
+      - ./data/application/mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
+  
+  mongo-express:
+    image: mongo-express
+    container_name: mexpress
+    environment:
+      - ME_CONFIG_MONGODB_ADMINUSERNAME=root
+      - ME_CONFIG_MONGODB_ADMINPASSWORD=password
+      - ME_CONFIG_MONGODB_URL=mongodb://root:password@mongo:27017/?authSource=admin
+      - ME_CONFIG_BASICAUTH_USERNAME=admin
+      - ME_CONFIG_BASICAUTH_PASSWORD=admin
+    links:
+      - mongo
+    restart: unless-stopped
+    ports:
+      - "8081:8081"
+
+volumes:
+  db:
+    driver: local
