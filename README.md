@@ -25,3 +25,9 @@ http://localhost:8080
 
 docker-compose down
 
+## By defauld XDEBUG is disabled, To enable it:
+docker compose build php
+
+export=XDEBUG_ENABLED=1
+
+docker-compose up -d
