@@ -19,7 +19,8 @@ if ($result = $mysqli->query($sql)) {
         $users[] = $data;
     }
 }
-
+echo "<h1>#----------- MySQL--------#</h1>";
+echo "<br>";
 echo "<b>Here are the users in MySQL db:</b>";
 echo "<br>";
 foreach ($users as $user) {
@@ -39,5 +40,14 @@ $query = new MongoDB\Driver\Query(array('age' => ['$gt' => 29]));
 // Output of the executeQuery will be object of MongoDB\Driver\Cursor class
 $cursor = $manager->executeQuery('testDb.testColl', $query);
 
+echo "<br>";
+echo "<br>";
+echo "<h1>#---------------MongoDB----------#</h1>";
+echo "<br>";
+echo "<b>Here are the users in MongoDB:</b>";
+echo "<br>";
+
 // Convert cursor to Array and print result
+echo '<pre>';
 print_r($cursor->toArray());
+echo '</pre>';
