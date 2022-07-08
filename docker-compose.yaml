@@ -10,6 +10,9 @@ services:
       - 80:80
     links:
       - mongo
+    environment:
+      - XDEBUG_ENABLED=${XDEBUG_ENABLED:-0}
+    command: /var/www/html/start-container.sh
     volumes:
       - ./src:/var/www/html/
 
